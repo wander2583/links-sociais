@@ -1,9 +1,9 @@
 import './social.css'
 
-export function Social(){
+export function Social({ children, url }){
   return(
-  <div>
-      <h1>ICONE</h1>
-    </div>
+    <a className="social" href={url} rel="noopener noreferrer" target="_blank">
+      {children}
+    </a>
   )
 }

@@ -1,4 +1,9 @@
 import { Social } from '../../components/Social'
+import {
+FaFacebook,
+FaInstagrram,
+FaYoutube
+} from 'react-icons/fa'
 import './home.css'
 
 export default function Home(){
@@ -28,8 +33,8 @@ export default function Home(){
         </section>
 
           <footer>
-          <Social>
-          
+          <Social url="https://facebook.com/wanderlei">
+          <FaFacebook size={35} color="#FFF" /> 
           </Social>
         </footer>
 
