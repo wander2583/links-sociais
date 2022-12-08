@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Logo } from '../../components/Logo'
 import { auth } from '../../services/firebaseConnection';
 
@@ -16,19 +17,20 @@ export default function Login(){
     e.preventDefault();
 
     if(email === '' || password === ''){
-      alert("Preencha todos os dados!")
+      toast.info("Preencha todos os dados")
       return;
     }
 
     signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
+      .then(() => {
+        toast.success("Bem vindo de volta! ;)")
         navigate("/admin", { replace: true })
       })
-    .catch(() => {
-        console.log("Erro ao conectar")
+      .catch(() => {
+        toast.error("Erro ao tentar fazer o login!")
       })
 
-   
+
   }
   return(
     <div className="login-container">
