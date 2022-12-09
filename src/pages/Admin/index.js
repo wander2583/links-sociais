@@ -6,6 +6,9 @@ import { MdAddLink } from "react-icons/md"
 import { FiTrash2 } from "react-icons/fi"
 
 import './admin.css'
+import { toast } from "react-toastify";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../services/firebaseConnection";
 
 
 
@@ -15,11 +18,37 @@ export default function Admin(){
   const [backgroundColorInput, setBackgroundColorInput] = useState("#f1f1f1");
   const [textColorInput, setTextColorInput] = useState("#121212");
 
+  async function handleRegister(e){
+    e.preventDefault();
+
+    if(nameInput === '' || urlInput === ''){
+      toast.warn("Prencha todos os dados!")
+      return;
+    }
+
+    addDoc(collection(db, "links"), {
+      name: nameInput,
+      url: urlInput,
+      bg: backgroundColorInput,
+      color: textColorInput,
+      created: new Date(),
+    })
+      .then(() => {
+        setNameInput("")
+        setUrlInput("")
+        console.log("Link registrado com sucesso!!!")
+      })
+      .catch((error) => {
+        console.log("Erro ao registrar" + error)
+        toast.error("Ops erro ao salvar o link")
+      })
+  }
   return(
     <div className="admin-container">
       <Header />
       <Logo/>
-      <form className="form">
+      <form className="form" onSubmit={handleRegister}>
+
         <label className="label">Nome do Link</label>
         <Input 
           placeholder="Nome do seu link..."
@@ -57,7 +86,7 @@ export default function Admin(){
         { nameInput !== '' && (
           <div className="preview">
             <label className="label">Veja como esta ficando </label>
-            <article className="list" style={{ marginTop: 8, backgroundColor: backgroundColorInput }}>
+            <article className="list" style={{ marginTop: 2, marginBottom: 10, backgroundColor: backgroundColorInput }}>
               <p style={{ color: textColorInput }} >{nameInput}</p>
             </article>
           </div>
