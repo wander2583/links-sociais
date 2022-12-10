@@ -10,7 +10,7 @@ const [loading, setLoading] = useState(true)
 
   useEffect(() => {
    async function checkLogin(){
-      const unsub = onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, (user) => {
 
         if(user){
           const userData = {
