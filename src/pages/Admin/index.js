@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/input";
 import { Logo } from "../../components/Logo";
@@ -7,7 +7,7 @@ import { FiTrash2 } from "react-icons/fi"
 
 import './admin.css'
 import { toast } from "react-toastify";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../services/firebaseConnection";
 
 
@@ -18,6 +18,32 @@ export default function Admin(){
   const [backgroundColorInput, setBackgroundColorInput] = useState("#f1f1f1");
   const [textColorInput, setTextColorInput] = useState("#121212");
 
+  const [links, setLinks] = useState([])
+
+  useEffect(() => {
+
+    const linksRef = collection(db, "links")
+    const queryRef = query(linksRef, orderBy("created", "asc"))
+
+    const unsub = onSnapshot(queryRef, (snapshot) => {
+
+      let lista = [];
+
+      snapshot.forEach((doc) => {
+        lista.push({
+          id: doc.id,
+          name: doc.data().name,
+          url: doc.data().url,
+          bg: doc.data().bg,
+          color: doc.data().color
+        })
+      })
+
+      setLinks(lista);
+
+    })
+
+  }, [])
   async function handleRegister(e){
     e.preventDefault();
 
@@ -42,6 +68,11 @@ export default function Admin(){
         console.log("Erro ao registrar" + error)
         toast.error("Ops erro ao salvar o link")
       })
+  }
+
+ async function handleDeleteLink(id){
+    const docRef = doc(db, "links", id)
+    await deleteDoc(docRef)
   }
   return(
     <div className="admin-container">
@@ -101,17 +132,21 @@ export default function Admin(){
         Meus Links
       </h2>
 
-      <article 
-        className="list animate-pop"
-        style={{ backgroundColor: "#000", color: "#FFF" }}
-      >
-        <p>Grupo Exclusivo do Telegram</p>
-        <div>
-          <button className="btn-delete">
-            <FiTrash2 size={18} color="#FFF" />
-          </button>
-        </div>
-      </article>
+      { links.map((item, index) => (
+        <article 
+          key={index}
+          className="list animate-pop"
+          style={{ backgroundColor: item.bg, color: item.color }}
+        >
+          <p>{item.name}</p>
+          <div>
+            <button className="btn-delete" onClick={ () => handleDeleteLink(item.id) }>
+              <FiTrash2 size={18} color="#FFF" />
+            </button>
+          </div>
+        </article>
+      ))}
+
     </div>
   )
 }
