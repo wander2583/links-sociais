@@ -1,5 +1,5 @@
 .home-container {
-display: flex;
+  display: flex;
   flex-direction: column;
   width: 100%;
   padding: 14px 0;
@@ -42,7 +42,7 @@ display: flex;
 }
 
 .link-text {
-font-size: 18px;
+  font-size: 18px;
   line-height: 150%;
   color: #000;
 }
